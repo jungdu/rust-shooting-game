@@ -1,7 +1,7 @@
 use piston_window::{Context, G2d, Key};
 
 use crate::enemy::create_enemies;
-use crate::game_obj::{draw_objs, update_objs};
+use crate::game_obj::{detect_object_collision, draw_objs, update_objs};
 use crate::two_dimensional_space::{detect_collision, Position};
 use crate::{bullet::Bullet, direction::Direction, enemy::Enemy, player::Player};
 
@@ -53,16 +53,8 @@ impl Game {
 
     fn process_collision(&mut self) {
         self.bullets.iter_mut().for_each(|bullet| {
-            let bullet_hit_box_points = bullet.get_hit_box_points();
             self.enemies.iter_mut().for_each(|enemy| {
-                let enemy_hit_box_points = enemy.get_hit_box_points();
-                let result = detect_collision(
-                    bullet_hit_box_points.0,
-                    bullet_hit_box_points.1,
-                    enemy_hit_box_points.0,
-                    enemy_hit_box_points.1,
-                );
-                if result {
+                if detect_object_collision(bullet, enemy) {
                     bullet.destroy();
                     enemy.reduce_hp(1);
                 }

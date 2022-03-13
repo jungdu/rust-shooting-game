@@ -3,7 +3,7 @@ use piston_window::{types::Color, Context, G2d};
 use crate::{
     constants::{SCREEN_HEIGHT, SCREEN_WIDTH},
     draw::draw_rectangle,
-    game_obj::GameObj,
+    game_obj::{GameObj, HitBox},
     two_dimensional_space::Position,
 };
 
@@ -36,18 +36,6 @@ impl Bullet {
         }
     }
 
-    pub fn get_hit_box_points(&self) -> ((f64, f64), (f64, f64)) {
-        (
-            (
-                self.position.x - (BULLET_WIDTH / 2.0),
-                self.position.y - (BULLET_HEIGHT / 2.0),
-            ),
-            (
-                self.position.x + (BULLET_WIDTH / 2.0),
-                self.position.y + (BULLET_HEIGHT / 2.0),
-            ),
-        )
-    }
 
     pub fn destroy(&mut self) {
         self.destroyed = true;
@@ -79,6 +67,21 @@ impl GameObj for Bullet {
             BULLET_HEIGHT,
             con,
             g,
+        )
+    }
+}
+
+impl HitBox for Bullet {
+    fn get_hit_box_points(&self) -> ((f64, f64), (f64, f64)) {
+        (
+            (
+                self.position.x - (BULLET_WIDTH / 2.0),
+                self.position.y - (BULLET_HEIGHT / 2.0),
+            ),
+            (
+                self.position.x + (BULLET_WIDTH / 2.0),
+                self.position.y + (BULLET_HEIGHT / 2.0),
+            ),
         )
     }
 }

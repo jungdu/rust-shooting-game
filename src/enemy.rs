@@ -1,7 +1,10 @@
 use piston_window::{Context, G2d};
 
 use crate::{
-    direction::Direction, draw::draw_rectangle, game_obj::GameObj, two_dimensional_space::Position,
+    direction::Direction,
+    draw::draw_rectangle,
+    game_obj::{GameObj, HitBox},
+    two_dimensional_space::Position,
 };
 
 const ENEMY_WIDTH: f64 = 50.0;
@@ -32,16 +35,6 @@ impl Enemy {
             hp: MAX_HP,
             moving_direction: Direction::Right,
         }
-    }
-
-    pub fn get_hit_box_points(&self) -> ((f64, f64), (f64, f64)) {
-        (
-            (self.position.x, self.position.y),
-            (
-                self.position.x + ENEMY_WIDTH,
-                self.position.y + ENEMY_HEIGHT,
-            ),
-        )
     }
 
     pub fn reduce_hp(&mut self, power: usize) {
@@ -92,6 +85,18 @@ impl GameObj for Enemy {
             ENEMY_HEIGHT,
             con,
             g,
+        )
+    }
+}
+
+impl HitBox for Enemy {
+    fn get_hit_box_points(&self) -> ((f64, f64), (f64, f64)) {
+        (
+            (self.position.x, self.position.y),
+            (
+                self.position.x + ENEMY_WIDTH,
+                self.position.y + ENEMY_HEIGHT,
+            ),
         )
     }
 }
