@@ -45,6 +45,10 @@ impl Game {
         update_objs(&mut self.bullets);
         update_objs(&mut self.enemies);
         self.process_collision();
+
+        if self.enemies.len() == 0 {
+            self.enemies = create_initial_enemies();
+        }
     }
 
     fn process_collision(&mut self) {
@@ -73,6 +77,9 @@ fn create_initial_enemies() -> Vec<Enemy> {
         Position { y: 100.0, x: 250.0 },
         Position { y: 100.0, x: 400.0 },
         Position { y: 100.0, x: 550.0 },
+        Position { y: 140.0, x: 175.0 },
+        Position { y: 140.0, x: 325.0 },
+        Position { y: 140.0, x: 475.0 },
     ];
     create_enemies(&enemy_positions)
 }
