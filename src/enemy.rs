@@ -1,6 +1,6 @@
 use piston_window::{types::Color, Context, G2d};
 
-use crate::{draw::draw_rectangle, two_dimensional_space::Position};
+use crate::{draw::draw_rectangle, game_obj::GameObj, two_dimensional_space::Position};
 
 const ENEMY_COLOR: Color = [0.7, 0.0, 0.7, 1.0];
 const ENEMY_WIDTH: f64 = 50.0;
@@ -8,6 +8,8 @@ const ENEMY_HEIGHT: f64 = 25.0;
 
 pub struct Enemy {
     position: Position,
+    hp: usize,
+    destroyed: bool,
 }
 
 impl Enemy {
@@ -17,19 +19,9 @@ impl Enemy {
                 x: position_x,
                 y: position_y,
             },
+            destroyed: false,
+            hp: 3,
         }
-    }
-
-    pub fn draw(&self, con: &Context, g: &mut G2d) {
-        draw_rectangle(
-            ENEMY_COLOR,
-            self.position.x,
-            self.position.y,
-            ENEMY_WIDTH,
-            ENEMY_HEIGHT,
-            con,
-            g,
-        )
     }
 
     pub fn get_hit_box_points(&self) -> ((f64, f64), (f64, f64)) {
@@ -39,6 +31,31 @@ impl Enemy {
                 self.position.x + ENEMY_WIDTH,
                 self.position.y + ENEMY_HEIGHT,
             ),
+        )
+    }
+
+    pub fn reduce_hp(&mut self, power: usize) {
+        self.hp -= power;
+        if self.hp <= 0 {
+            self.destroyed = true;
+        }
+    }
+}
+
+impl GameObj for Enemy {
+    fn update(&mut self) -> bool {
+        self.destroyed
+    }
+
+    fn draw(&self, con: &Context, g: &mut G2d) {
+        draw_rectangle(
+            ENEMY_COLOR,
+            self.position.x,
+            self.position.y,
+            ENEMY_WIDTH,
+            ENEMY_HEIGHT,
+            con,
+            g,
         )
     }
 }

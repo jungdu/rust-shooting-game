@@ -1,6 +1,7 @@
 use piston_window::{Context, G2d, Key};
 
 use crate::enemy::create_enemies;
+use crate::game_obj::{draw_objs, update_objs};
 use crate::two_dimensional_space::{detect_collision, Position};
 use crate::{bullet::Bullet, direction::Direction, enemy::Enemy, player::Player};
 
@@ -35,22 +36,17 @@ impl Game {
 
     pub fn draw(&self, con: &Context, g: &mut G2d) {
         self.player.draw(con, g);
-        self.bullets.iter().for_each(|bullet| bullet.draw(con, g));
-        self.enemies.iter().for_each(|enemy| enemy.draw(con, g));
+        draw_objs(&self.bullets, con, g);
+        draw_objs(&self.enemies, con, g);
     }
 
     pub fn update(&mut self) {
-        let mut destroyed_bullet_indexes: Vec<usize> = Vec::new();
-        for (idx, bullet) in self.bullets.iter_mut().enumerate() {
-            if bullet.update() {
-                destroyed_bullet_indexes.push(idx);
-            }
-        }
+        update_objs(&mut self.bullets);
+        update_objs(&mut self.enemies);
+        self.process_collision();
+    }
 
-        destroyed_bullet_indexes.iter().for_each(|idx| {
-            self.bullets.remove(*idx);
-        });
-
+    fn process_collision(&mut self) {
         self.bullets.iter_mut().for_each(|bullet| {
             let bullet_hit_box_points = bullet.get_hit_box_points();
             self.enemies.iter_mut().for_each(|enemy| {
@@ -63,6 +59,7 @@ impl Game {
                 );
                 if result {
                     bullet.destroy();
+                    enemy.reduce_hp(1);
                 }
             })
         });

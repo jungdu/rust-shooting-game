@@ -6,6 +6,7 @@ mod direction;
 mod draw;
 mod enemy;
 mod game;
+mod game_obj;
 mod player;
 mod two_dimensional_space;
 

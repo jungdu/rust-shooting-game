@@ -1,6 +1,6 @@
 use piston_window::{types::Color, Context, G2d};
 
-use crate::{draw::draw_rectangle, two_dimensional_space::Position};
+use crate::{draw::draw_rectangle, game_obj::GameObj, two_dimensional_space::Position};
 
 const BULLET_COLOR: Color = [1.0, 0.0, 0.0, 1.0];
 const BULLET_WIDTH: f64 = 5.0;
@@ -31,23 +31,6 @@ impl Bullet {
         }
     }
 
-    pub fn update(&mut self) -> bool {
-        self.position.add(&self.velocity);
-        self.destroyed
-    }
-
-    pub fn draw(&self, con: &Context, g: &mut G2d) {
-        draw_rectangle(
-            BULLET_COLOR,
-            self.position.x - (BULLET_WIDTH / 2.0),
-            self.position.y - (BULLET_HEIGHT / 2.0),
-            BULLET_WIDTH,
-            BULLET_HEIGHT,
-            con,
-            g,
-        )
-    }
-
     pub fn get_hit_box_points(&self) -> ((f64, f64), (f64, f64)) {
         (
             (
@@ -63,5 +46,24 @@ impl Bullet {
 
     pub fn destroy(&mut self) {
         self.destroyed = true;
+    }
+}
+
+impl GameObj for Bullet {
+    fn update(&mut self) -> bool {
+        self.position.add(&self.velocity);
+        self.destroyed
+    }
+
+    fn draw(&self, con: &Context, g: &mut G2d) {
+        draw_rectangle(
+            BULLET_COLOR,
+            self.position.x - (BULLET_WIDTH / 2.0),
+            self.position.y - (BULLET_HEIGHT / 2.0),
+            BULLET_WIDTH,
+            BULLET_HEIGHT,
+            con,
+            g,
+        )
     }
 }
