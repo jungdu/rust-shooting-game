@@ -1,14 +1,14 @@
-use piston_window::{types::Color, Context, G2d};
+use piston_window::{Context, G2d};
 
 use crate::{
     direction::Direction, draw::draw_rectangle, game_obj::GameObj, two_dimensional_space::Position,
 };
 
-const ENEMY_COLOR: Color = [0.7, 0.0, 0.7, 1.0];
 const ENEMY_WIDTH: f64 = 50.0;
 const ENEMY_HEIGHT: f64 = 25.0;
 const PATROL_RANGE: f64 = 120.0;
 const PATROL_SPEED: f64 = 0.4;
+const MAX_HP: usize = 3;
 
 pub struct Enemy {
     initial_position: Position,
@@ -29,7 +29,7 @@ impl Enemy {
             initial_position: initial_position,
             position: initial_position.clone(),
             destroyed: false,
-            hp: 3,
+            hp: MAX_HP,
             moving_direction: Direction::Right,
         }
     }
@@ -69,7 +69,7 @@ impl Enemy {
                 if next_position_x > self.initial_position.x + PATROL_RANGE {
                     self.moving_direction = Direction::Left;
                     self.position.x = max_position_x;
-                }else{
+                } else {
                     self.position.x = next_position_x;
                 }
             }
@@ -85,7 +85,7 @@ impl GameObj for Enemy {
 
     fn draw(&self, con: &Context, g: &mut G2d) {
         draw_rectangle(
-            ENEMY_COLOR,
+            [0.7, 0.0, 0.7, ((self.hp as f32) / (MAX_HP as f32))],
             self.position.x,
             self.position.y,
             ENEMY_WIDTH,
