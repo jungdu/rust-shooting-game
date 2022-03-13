@@ -1,7 +1,9 @@
+use constants::{SCREEN_HEIGHT, SCREEN_WIDTH};
 use game::Game;
 use piston_window::{clear, types::Color, Button, PistonWindow, PressEvent, WindowSettings};
 
 mod bullet;
+mod constants;
 mod direction;
 mod draw;
 mod enemy;
@@ -13,7 +15,7 @@ mod two_dimensional_space;
 const BACK_COLOR: Color = [0.2, 0.2, 0.2, 1.0];
 
 fn main() {
-    let (width, height) = (750.0, 750.0);
+    let (width, height) = (SCREEN_WIDTH, SCREEN_HEIGHT);
 
     let mut window: PistonWindow = WindowSettings::new("moving-rectangle", [width, height])
         .exit_on_esc(true)

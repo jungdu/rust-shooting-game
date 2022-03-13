@@ -1,6 +1,11 @@
 use piston_window::{types::Color, Context, G2d};
 
-use crate::{draw::draw_rectangle, game_obj::GameObj, two_dimensional_space::Position};
+use crate::{
+    constants::{SCREEN_HEIGHT, SCREEN_WIDTH},
+    draw::draw_rectangle,
+    game_obj::GameObj,
+    two_dimensional_space::Position,
+};
 
 const BULLET_COLOR: Color = [1.0, 0.0, 0.0, 1.0];
 const BULLET_WIDTH: f64 = 5.0;
@@ -47,11 +52,21 @@ impl Bullet {
     pub fn destroy(&mut self) {
         self.destroyed = true;
     }
+
+    fn check_in_screen(&self) -> bool {
+        0.0 < self.position.y
+            && self.position.y < SCREEN_HEIGHT
+            && 0.0 < self.position.x
+            && self.position.x < SCREEN_WIDTH
+    }
 }
 
 impl GameObj for Bullet {
     fn update(&mut self) -> bool {
         self.position.add(&self.velocity);
+        if !(self.check_in_screen()) {
+            self.destroyed = true
+        }
         self.destroyed
     }
 
