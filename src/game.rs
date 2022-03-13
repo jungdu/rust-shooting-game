@@ -1,7 +1,7 @@
 use piston_window::{Context, G2d, Key};
 
 use crate::enemy::create_enemies;
-use crate::two_dimensional_space::Position;
+use crate::two_dimensional_space::{detect_collision, Position};
 use crate::{bullet::Bullet, direction::Direction, enemy::Enemy, player::Player};
 
 pub struct Game {
@@ -40,7 +40,32 @@ impl Game {
     }
 
     pub fn update(&mut self) {
-        self.bullets.iter_mut().for_each(|bullet| bullet.update());
+        let mut destroyed_bullet_indexes: Vec<usize> = Vec::new();
+        for (idx, bullet) in self.bullets.iter_mut().enumerate() {
+            if bullet.update() {
+                destroyed_bullet_indexes.push(idx);
+            }
+        }
+
+        destroyed_bullet_indexes.iter().for_each(|idx| {
+            self.bullets.remove(*idx);
+        });
+
+        self.bullets.iter_mut().for_each(|bullet| {
+            let bullet_hit_box_points = bullet.get_hit_box_points();
+            self.enemies.iter_mut().for_each(|enemy| {
+                let enemy_hit_box_points = enemy.get_hit_box_points();
+                let result = detect_collision(
+                    bullet_hit_box_points.0,
+                    bullet_hit_box_points.1,
+                    enemy_hit_box_points.0,
+                    enemy_hit_box_points.1,
+                );
+                if result {
+                    bullet.destroy();
+                }
+            })
+        });
     }
 }
 

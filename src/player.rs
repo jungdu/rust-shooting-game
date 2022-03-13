@@ -87,11 +87,6 @@ impl Player {
     }
 
     pub fn fire(&self) -> Bullet {
-        Bullet::new(
-          self.position.x, 
-          self.position.y,
-          0.0,
-          -2.0
-        )
+        Bullet::new(self.position.x, self.position.y, 0.0, -2.0)
     }
 }

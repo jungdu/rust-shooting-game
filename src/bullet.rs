@@ -13,6 +13,7 @@ pub trait Updatable {
 pub struct Bullet {
     position: Position,
     velocity: Position,
+    destroyed: bool,
 }
 
 impl Bullet {
@@ -26,22 +27,41 @@ impl Bullet {
                 x: velocity_x,
                 y: velocity_y,
             },
+            destroyed: false,
         }
     }
 
-    pub fn update(&mut self) {
+    pub fn update(&mut self) -> bool {
         self.position.add(&self.velocity);
+        self.destroyed
     }
 
     pub fn draw(&self, con: &Context, g: &mut G2d) {
         draw_rectangle(
             BULLET_COLOR,
-            self.position.x,
-            self.position.y,
+            self.position.x - (BULLET_WIDTH / 2.0),
+            self.position.y - (BULLET_HEIGHT / 2.0),
             BULLET_WIDTH,
             BULLET_HEIGHT,
             con,
             g,
         )
+    }
+
+    pub fn get_hit_box_points(&self) -> ((f64, f64), (f64, f64)) {
+        (
+            (
+                self.position.x - (BULLET_WIDTH / 2.0),
+                self.position.y - (BULLET_HEIGHT / 2.0),
+            ),
+            (
+                self.position.x + (BULLET_WIDTH / 2.0),
+                self.position.y + (BULLET_HEIGHT / 2.0),
+            ),
+        )
+    }
+
+    pub fn destroy(&mut self) {
+        self.destroyed = true;
     }
 }

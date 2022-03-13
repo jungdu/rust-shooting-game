@@ -31,6 +31,16 @@ impl Enemy {
             g,
         )
     }
+
+    pub fn get_hit_box_points(&self) -> ((f64, f64), (f64, f64)) {
+        (
+            (self.position.x, self.position.y),
+            (
+                self.position.x + ENEMY_WIDTH,
+                self.position.y + ENEMY_HEIGHT,
+            ),
+        )
+    }
 }
 
 pub fn create_enemies(enemy_positions: &[Position]) -> Vec<Enemy> {
