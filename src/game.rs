@@ -24,9 +24,10 @@ impl Game {
         println!("Key pressed: {:?}", key);
 
         match key {
-            Key::Up | Key::Space => {
-                self.bullets.push(self.player.fire());
-            }
+            Key::Up | Key::Space => match self.player.fire() {
+                Some(bullet) => self.bullets.push(bullet),
+                None => {}
+            },
             Key::Down => {}
             Key::Left => self.player.move_position(Direction::Left),
             Key::Right => self.player.move_position(Direction::Right),

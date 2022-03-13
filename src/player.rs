@@ -3,6 +3,7 @@ use piston_window::{types::Color, Context, G2d};
 use crate::{
     bullet::Bullet, direction::Direction, draw::draw_rectangle, two_dimensional_space::Position,
 };
+use std::time::Instant;
 
 const PLAYER_COLOR: Color = [0.0, 1.0, 1.0, 1.0];
 const POSITION_X_RANGE: (f64, f64) = (50.0, 700.0);
@@ -10,15 +11,18 @@ const HEAD_WIDTH: f64 = 25.0;
 const HEAD_HEIGHT: f64 = 17.5;
 const WING_WIDTH: f64 = 17.5;
 const WING_HEIGHT: f64 = 12.5;
+const THROTTLE_DURATION: u128 = 200;
 
 pub struct Player {
     position: Position,
+    time_instant: Instant,
 }
 
 impl Player {
     pub fn new(x: f64, y: f64) -> Player {
         Player {
             position: Position { x, y },
+            time_instant: Instant::now(),
         }
     }
 
@@ -86,7 +90,13 @@ impl Player {
         }
     }
 
-    pub fn fire(&self) -> Bullet {
-        Bullet::new(self.position.x, self.position.y, 0.0, -2.0)
+    pub fn fire(&mut self) -> Option<Bullet> {
+        let secs = self.time_instant.elapsed().as_millis();
+        if secs < THROTTLE_DURATION {
+            return None;
+        }
+
+        self.time_instant = Instant::now();
+        Some(Bullet::new(self.position.x, self.position.y, 0.0, -2.0))
     }
 }
